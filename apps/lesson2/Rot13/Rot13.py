@@ -3,12 +3,9 @@ import cgi
 import string
 
 formdata = """
-<form method="post" action="/">
-    <br>
-    <label>Enter your Data here<br>
-        <textarea name="text" rows="10" cols="50">
-            %(text)s
-        </textarea>
+<form method="post" >
+    <label>Enter your text here<br>
+        <textarea name="text" rows="10" cols="50">%(text)s</textarea>
     </label>
     <br><br>
     <input type="submit">
@@ -22,13 +19,14 @@ rot_dict = lower_dict.copy()
 rot_dict.update(upper_dict)
 
 def Rot13(s):
-    return "".join([rot_dict[m] if m in rot_dict.keys() else cgi.escape(m) for m in s])
+    return "".join([rot_dict[m] if m in rot_dict.keys() else cgi.escape(m, quote=True) for m in s])
 
 class MainPage(webapp2.RequestHandler):
     def writeform(self,text=""):
         self.response.out.write(formdata%{"text":text})
 
     def get(self):
+        self.response.headers['content-type']='text/html'
         self.writeform()
 
     def post(self):
